@@ -1,0 +1,246 @@
+<div
+  class="breaking-news"
+  description="Template breaking news avec animation d'urgence"
+  title="Breaking News"
+  script="start_breaking_news, stop_breaking_news"
+  tag="breaking, news, urgent, alert"
+  inputs="text:titre_breaking_news,text:sous titre_breaking_news"
+>
+  <div class="breaking-container">
+    <div class="breaking-header">
+      <div class="breaking-label" id="breaking-label">BREAKING NEWS</div>
+      <div class="breaking-flash" id="breaking-flash"></div>
+    </div>
+    <div class="breaking-content">
+      <div class="breaking-title" id="breaking-title">
+        Titre de l'actualité urgente
+      </div>
+      <div class="breaking-subtitle" id="breaking-subtitle">
+        Sous-titre avec plus de détails
+      </div>
+    </div>
+    <div class="breaking-timer" id="breaking-timer">00:00</div>
+  </div>
+</div>
+
+<script>
+  let breakingInterval
+  let startTime
+
+  async function start_breaking_news() {
+    const container = document.querySelector('.breaking-container')
+    const flash = document.getElementById('breaking-flash')
+    const timer = document.getElementById('breaking-timer')
+    const breakingNews = document.querySelector('.breaking-news')
+    const titleElement = document.getElementById('breaking-title')
+    const subtitleElement = document.getElementById('breaking-subtitle')
+
+    const titleRes = await fetch(`/api/actions/input/titre_breaking_news`)
+    const title = await titleRes.text()
+    const subtitleRes = await fetch(
+      `/api/actions/input/sous titre_breaking_news`
+    )
+    const subtitle = await subtitleRes.text()
+
+    if (titleElement) {
+      titleElement.textContent = title
+    }
+    if (subtitleElement) {
+      subtitleElement.textContent = subtitle
+    }
+
+    // Réinitialiser l'affichage
+    breakingNews.style.display = 'block'
+    container.style.animation = 'none'
+
+    startTime = Date.now()
+
+    // Animation d'entrée dramatique
+    container.style.animation = 'breaking-enter 2s ease-out'
+
+    // Animation du flash rouge
+    flash.style.animation = 'breaking-flash 0.5s ease-in-out infinite'
+
+    // Timer qui s'incrémente
+    breakingInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000)
+      const minutes = Math.floor(elapsed / 60)
+      const seconds = elapsed % 60
+      const timer = document.getElementById('breaking-timer')
+      if (!timer) return
+      timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds
+        .toString()
+        .padStart(2, '0')}`
+    }, 1000)
+
+    // Animation du titre
+    setTimeout(() => {
+      const title = document.getElementById('breaking-title')
+      if (title) {
+        title.style.animation = 'title-pulse 2s ease-in-out infinite'
+      }
+    }, 1000)
+  }
+
+  function stop_breaking_news() {
+    console.log('stop_breaking_news')
+    const container = document.querySelector('.breaking-container')
+    const flash = document.getElementById('breaking-flash')
+    const title = document.getElementById('breaking-title')
+    const breakingNews = document.querySelector('.breaking-news')
+
+    if (breakingInterval) {
+      clearInterval(breakingInterval)
+    }
+
+    // Animation de sortie
+    container.style.animation = 'breaking-exit 1.5s ease-in forwards'
+
+    // Arrêter les animations
+    flash.style.animation = 'none'
+    title.style.animation = 'none'
+
+    // Masquer complètement après l'animation
+    setTimeout(() => {
+      breakingNews.style.display = 'none'
+    }, 1500)
+  }
+
+  globalThis.start_breaking_news = start_breaking_news
+  globalThis.stop_breaking_news = stop_breaking_news
+</script>
+
+<style>
+  .breaking-news {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+  }
+
+  .breaking-container {
+    position: relative;
+    background: linear-gradient(135deg, #ff0000, #cc0000);
+    color: white;
+    padding: 2em;
+    border-radius: 1em;
+    text-align: center;
+    min-width: 25em;
+    box-shadow: 0 0 2em rgba(255, 0, 0, 0.5);
+    border: 0.2em solid #ffffff;
+  }
+
+  .breaking-header {
+    position: relative;
+    margin-bottom: 1em;
+  }
+
+  .breaking-label {
+    font-size: 1.2em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.5);
+    animation: label-shake 0.1s ease-in-out infinite;
+  }
+
+  .breaking-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 0.5em;
+    z-index: -1;
+  }
+
+  .breaking-content {
+    margin-bottom: 1em;
+  }
+
+  .breaking-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    text-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.7);
+    line-height: 1.2;
+  }
+
+  .breaking-subtitle {
+    font-size: 1em;
+    opacity: 0.9;
+    font-weight: 300;
+  }
+
+  .breaking-timer {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    font-size: 0.8em;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.3em 0.6em;
+    border-radius: 0.3em;
+    font-family: 'Courier New', monospace;
+  }
+
+  @keyframes breaking-enter {
+    0% {
+      opacity: 0;
+      transform: scale(0.5) rotate(-5deg);
+    }
+    50% {
+      transform: scale(1.1) rotate(2deg);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+  }
+
+  @keyframes breaking-exit {
+    0% {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.8) rotate(5deg);
+    }
+  }
+
+  @keyframes breaking-flash {
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  @keyframes label-shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-0.1em);
+    }
+    75% {
+      transform: translateX(0.1em);
+    }
+  }
+
+  @keyframes title-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+</style>

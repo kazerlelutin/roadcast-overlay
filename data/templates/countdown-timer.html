@@ -1,0 +1,229 @@
+<div
+  class="countdown-timer"
+  description="Compte à rebours animé pour le live"
+  title="Countdown Timer"
+  script="
+  start_countdown_timer,
+  modifier le temps_countdown_timer,
+  stop_countdown_timer"
+  tag="countdown, timer, live"
+  inputs="number:temps_countdown_timer"
+>
+  <div class="countdown-container">
+    <div class="countdown-title">RETOUR DANS</div>
+    <div class="countdown-display" id="countdown-display">
+      <div class="time-unit">
+        <span class="time-value" id="minutes">05</span>
+        <span class="time-label">MIN</span>
+      </div>
+      <div class="time-separator">:</div>
+      <div class="time-unit">
+        <span class="time-value" id="seconds">00</span>
+        <span class="time-label">SEC</span>
+      </div>
+    </div>
+    <div class="countdown-progress">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let countdownInterval
+  let totalSeconds = 300 // 5 minutes par défaut
+  let currentSeconds = totalSeconds
+
+  function start_countdown_timer() {
+    const container = document.querySelector('.countdown-timer')
+    if (!container) return
+    // Réinitialiser l'affichage
+    container.style.display = 'block'
+    container.style.animation = 'none'
+
+    currentSeconds = totalSeconds
+
+    updateDisplay()
+
+    countdownInterval = setInterval(() => {
+      currentSeconds--
+      updateDisplay()
+      updateProgress()
+
+      if (currentSeconds <= 0) {
+        stop_countdown_timer()
+        // Animation de fin
+        const display = document.getElementById('countdown-display')
+        if (!display) return
+        display.style.animation = 'countdown-end 1s ease-in-out'
+      }
+    }, 1000)
+  }
+
+  function stop_countdown_timer() {
+    const container = document.querySelector('.countdown-timer')
+
+    if (!container) return
+    if (countdownInterval) {
+      clearInterval(countdownInterval)
+    }
+
+    // Animation de sortie
+    container.style.animation = 'countdown-exit 0.8s ease-in forwards'
+
+    // Masquer complètement après l'animation
+    setTimeout(() => {
+      if (!container.style) return
+      container.style.display = 'none'
+    }, 800)
+  }
+
+  function updateDisplay() {
+    const minutes = Math.floor(currentSeconds / 60)
+    const seconds = currentSeconds % 60
+
+    if (!document.getElementById('minutes')) return
+    if (!document.getElementById('seconds')) return
+
+    document.getElementById('minutes').textContent = minutes
+      .toString()
+      .padStart(2, '0')
+    document.getElementById('seconds').textContent = seconds
+      .toString()
+      .padStart(2, '0')
+  }
+
+  function updateProgress() {
+    const progress = ((totalSeconds - currentSeconds) / totalSeconds) * 100
+    if (!document.getElementById('progress-bar')) return
+    document.getElementById('progress-bar').style.width = progress + '%'
+  }
+
+  async function change_time_countdown_timer() {
+    const timeRes = await fetch(`/api/actions/input/temps_countdown_timer`)
+    const time = await timeRes.text()
+    const minutes = parseInt(time)
+    totalSeconds = minutes * 60
+    currentSeconds = totalSeconds
+    updateDisplay()
+    updateProgress()
+  }
+
+  globalThis.start_countdown_timer = start_countdown_timer
+  globalThis.stop_countdown_timer = stop_countdown_timer
+  globalThis['modifier le temps_countdown_timer'] = change_time_countdown_timer
+</script>
+
+<style>
+  .countdown-timer {
+    position: absolute;
+    bottom: 2em;
+    right: 2em;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 1.5em;
+    border-radius: 1em;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(0.5em);
+  }
+
+  .countdown-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .countdown-title {
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #ff6b6b;
+  }
+
+  .countdown-display {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    font-size: 2em;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+  }
+
+  .time-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .time-value {
+    font-size: 1.2em;
+    color: #4ecdc4;
+    text-shadow: 0 0 0.5em rgba(78, 205, 196, 0.5);
+  }
+
+  .time-label {
+    font-size: 0.4em;
+    color: #ccc;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .time-separator {
+    font-size: 1.2em;
+    color: #ff6b6b;
+    animation: blink 1s infinite;
+  }
+
+  .countdown-progress {
+    width: 100%;
+    height: 0.3em;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.15em;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+    width: 0%;
+    transition: width 1s linear;
+    border-radius: 0.15em;
+  }
+
+  @keyframes blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0.3;
+    }
+  }
+
+  @keyframes countdown-end {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes countdown-exit {
+    0% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.8) translateY(2em);
+    }
+  }
+</style>

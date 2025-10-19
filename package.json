@@ -1,0 +1,20 @@
+{
+  "name": "roadcast-layout",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --hot --watch index.ts app.ts",
+    "build": "bun build ./src/app.ts --outfile ./public/hydrate.mjs --format esm --minify --target browser && bun build --compile --minify ./index.ts --outfile roadcast_layout --target bun"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/tmi.js": "^1.8.6"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "tmi.js": "^1.8.5"
+  }
+}

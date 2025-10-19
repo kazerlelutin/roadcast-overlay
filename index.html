@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <title>ROADCAST LAYOUT</title>
+  <link rel="stylesheet" href="public/style.css" />
+  <link rel="icon" href="public/favicon.ico" />
+</head>
+
+<body>
+  <main class="app-main"></main>
+
+  <!-- Templates -->
+  <template id="about-item-template">
+    <article class="about-item">
+      <h2 data-role="text"></h2>
+      <p data-role="text"></p>
+      <a href="data-role=" link" target="_blank" rel="noopener noreferrer"></a>
+    </article>
+  </template>
+
+  <!-- Template pour les actions -->
+  <template id="action-item-template">
+    <div class="action-item" data-action-id="">
+      <div class="action-header">
+        <div class="action-info">
+          <h3 class="action-name" data-role="text"></h3>
+          <p class="action-description" data-role="text"></p>
+          <div class="action-tags" data-role="tags"></div>
+        </div>
+        <div class="action-controls">
+        </div>
+      </div>
+      <div class="action-inputs" data-role="inputs"></div>
+    </div>
+  </template>
+
+  <!-- PAGES-->
+
+  <template id="chat">
+    <div class="chat-page" id="chat-container">
+      <div class="chat" id="chat"></div>
+      <div class="alert-container" id="alert-container">
+        <div class="chat-alert" id="chat-alert">
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="alert">
+    <form class="alert-page" id="alert-form">
+      <textarea name="alert" id="alert-textarea" placeholder="Message d'alerte"></textarea>
+      <div class="alert-controls" id="alert-controls"> 
+        <button type="button" class="btn" id="alert-button-clear">Effacer</button>
+        <button type="button" class="btn" id="alert-button-cancel">Annuler</button>
+        <button type="submit" class="btn" id="alert-button">Envoyer</button>
+      </div>
+    </form>
+  </template>
+
+
+  <template id="overlay">
+    <div class="overlay-page" id="overlay-container">
+      <div class="overlay" id="overlay"></div>
+    </div>
+  </template>
+
+  <template id="home">
+    <div class="home">
+      <header class="header-app">
+        <a href="/" class="app-logo" data-internal>
+          <h1 class="app-name">ROADCAST OVERLAY</h1>
+        </a>
+      </header>
+      <div class="home-page" id="home-container">
+
+        <div class="panel-container">
+
+          <div class="actions-container" id="actions-container">
+            <div class="actions-list" id="actions-list">
+            </div>
+          </div>
+
+        </div>
+        <div class="controls-container" id="controls-container">
+          <div class="preview-container" id="preview-container">
+            <div class="preview" id="overlay"></div>
+            <div class="preview-controls" id="preview-controls"></div>
+            <!-- Lecteur HLS direct (exemple) -->
+            <div class="video-preview" id="video-preview" style="margin-top:12px;">
+
+            </div>
+          </div>
+          <div class="controls-container" id="controls-container">
+            <div class="control-select" id="control-select">
+              <button class="clear-screen" data-action="clear-screen">Effacer l'écran</button>
+              <a href="/alert" class="btn" target="_blank" rel="noopener noreferrer">Alerte</a>
+            </div>
+            <div class="tags-container" id="tags-container">
+              <select class="tag-select" id="tag-select"></select>
+              <div class="tag-item" id="tag-item"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="commands">
+    <div class="commands-page">
+      <div class="tags-container-commands" id="tags-container">
+        <select class="tag-select" id="tag-select"></select>
+        <div class="tag-item" id="tag-item"></div>
+      </div>
+      <div class="control-select" id="control-select">
+        <button class="clear-screen" data-action="clear-screen">Effacer l'écran</button>
+        <a href="/alert" class="btn" target="_blank" rel="noopener noreferrer">Alerte</a>
+      </div>
+      <div class="panel-container">
+        <div class="actions-container" id="actions-container">
+          <div class="actions-list" id="actions-list">
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </template>
+
+  <template id="about">
+    <div class="about-page" id="about-container">
+      <h1></h1>
+      <div class="about-items-container" id="about-items-container"></div>
+    </div>
+  </template>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script type="module" src="src/app.ts"></script>
+  <!-- hls.js pour lire un flux HLS dans le navigateur -->
+
+</body>
+
+</html>

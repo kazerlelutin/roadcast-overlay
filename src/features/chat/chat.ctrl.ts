@@ -9,6 +9,11 @@ export const chatCtrl: ChatCtrl = {
   init: () => {
     const getParams = new URLSearchParams(window.location.search);
     const channel = getParams.get('channel') || '';
+    const sizeStr = getParams.get('size') || '1';
+    let size = parseFloat(sizeStr);
+    if (isNaN(size)) {
+      size = 1;
+    }
 
     websocketAPI.subscribe("alert", chatCtrl.subscribe);
 
@@ -19,7 +24,7 @@ export const chatCtrl: ChatCtrl = {
         throw new Error('Alert container not found');
       }
 
-      alertContainer.innerHTML = '<div class="chat-alert">Veuillez entrer un nom de channel dans l\'URL <br>(ex: /chat?channel=channel)</div>';
+      alertContainer.innerHTML = '<div class="chat-alert" style="font-size: ' + size + 'em;">Veuillez entrer un nom de channel dans l\'URL <br>(ex: /chat?channel=channel)</div>';
       return;
     }
 
@@ -46,13 +51,20 @@ export const chatCtrl: ChatCtrl = {
     });
   },
   updateUI: () => {
+    const getParams = new URLSearchParams(window.location.search);
+
     const chatContainer = document.getElementById('chat');
+    const sizeStr = getParams.get('size') || '1';
+    let size = parseFloat(sizeStr);
+    if (isNaN(size)) {
+      size = 1;
+    }
 
     if (!chatContainer) {
       throw new Error('Chat container not found');
     }
     cook('chat', () => {
-      chatContainer.innerHTML = chatCtrl.messages.map(message => `<div class="message"><span class="message-username">${message.username}:</span> <span class="message-text">${message.message}</span></div>`).join('');
+      chatContainer.innerHTML = chatCtrl.messages.map(message => `<div class="message" style="font-size:${size}em;"><span class="message-username">${message.username}:</span> <span class="message-text">${message.message}</span></div>`).join('');
       chatContainer.scrollTop = chatContainer.scrollHeight;
     });
   },

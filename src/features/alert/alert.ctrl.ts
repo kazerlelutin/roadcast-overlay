@@ -1,4 +1,3 @@
-import { websocketAPI } from "../websocket/websocket.store";
 import type { AlertCtrl } from "./alert.type";
 
 const alertCtrl: AlertCtrl = {

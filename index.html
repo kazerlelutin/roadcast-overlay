@@ -39,6 +39,7 @@
 
   <template id="chat">
     <div class="chat-page" id="chat-container">
+      <div class="chat-alert" id="pinned-container"></div>
       <div class="chat" id="chat"></div>
       <div class="alert-container" id="alert-container">
         <div class="chat-alert" id="chat-alert">
@@ -49,6 +50,8 @@
 
   <template id="alert">
     <form class="alert-page" id="alert-form">
+      <div class="chat-alert" id="pinned-container"></div>
+      <div class="chat" id="chat"></div>
       <textarea name="alert" id="alert-textarea" placeholder="Message d'alerte"></textarea>
       <div class="alert-controls" id="alert-controls"> 
         <button type="button" class="btn" id="alert-button-clear">Effacer</button>

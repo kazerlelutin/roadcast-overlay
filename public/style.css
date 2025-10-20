@@ -274,9 +274,8 @@
     height: 100dvh;
     background: var(--primary-color);
     display: grid;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: auto 1fr auto;
     grid-template-columns: 1fr;
-
     font-size: var(--xl-size);
   }
 
@@ -285,6 +284,8 @@
     height: 100%;
     overflow-y: auto;
     padding: 0 var(--padding-medium);
+    overflow-x: hidden;
+    word-break: normal;
   }
 
   .message-username {
@@ -309,7 +310,7 @@
     display: grid;
     background: var(--primary-color);
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: auto 1fr auto;
     gap: var(--gap-medium);
     padding: var(--padding-medium);
   }
@@ -330,15 +331,30 @@
     animation: alert-pulse 1s infinite;
   }
 
+  .alert-page .message-text {
+    cursor: pointer;
+  }
+
+  .alert-page .message-text:hover {
+    background: var(--highlight-color);
+    color: #ffffff;
+  }
+
+  .alert-page .chat-alert {
+    font-size: var(--normal-size);
+  }
+
   @keyframes alert-pulse {
     0% {
       background: var(--warning-color);
       color: #ffffff;
     }
+
     50% {
       background: var(--primary-color);
       color: var(--warning-color);
     }
+
     100% {
       background: var(--warning-color);
       color: #ffffff;

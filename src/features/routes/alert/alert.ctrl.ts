@@ -9,7 +9,6 @@ const alertCtrlRoute: Ctrl = {
     alertCtrl.init?.();
     chatCtrl.init?.();
     pinnedMessageCtrl.init?.();
-    pinnedCtrl.init?.();
   },
   cleanUp() {
     alertCtrl?.cleanUp?.();

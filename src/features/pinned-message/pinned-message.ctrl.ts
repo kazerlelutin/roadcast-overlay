@@ -12,7 +12,6 @@ const pinnedMessageCtrl: PinnedMessageCtrl = {
     const target = event.target as HTMLElement;
     const messageDiv = target.closest('.message');
     if (messageDiv) {
-      document.getElementById('alert-textarea') as HTMLTextAreaElement;
       fetch(`/api/actions/execute/pinned/send`, {
         method: 'POST',
         body: JSON.stringify({ html: messageDiv.innerHTML }),

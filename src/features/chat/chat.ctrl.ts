@@ -6,16 +6,14 @@ import { websocketAPI } from "@/src/features/websocket/websocket.store";
 export const chatCtrl: ChatCtrl = {
   client: null as unknown as tmi.Client,
   messages: [],
-  init: () => {
-    const getParams = new URLSearchParams(window.location.search);
-    const channel = getParams.get('channel') || '';
-    const sizeStr = getParams.get('size') || '1';
-    let size = parseFloat(sizeStr);
-    if (isNaN(size)) {
-      size = 1;
-    }
+  async init() {
 
     websocketAPI.subscribe("alert", chatCtrl.subscribe);
+
+    const resChannel = await fetch(`/api/actions/input/channel-name`);
+    const channel = await resChannel.text();
+    const resSize = await fetch(`/api/actions/input/font-size`);
+    const size = await resSize.text();
 
     if (!channel) {
       const alertContainer = document.getElementById('alert-container');
@@ -24,7 +22,7 @@ export const chatCtrl: ChatCtrl = {
         throw new Error('Alert container not found');
       }
 
-      alertContainer.innerHTML = '<div class="chat-alert" style="font-size: ' + size + 'em;">Veuillez entrer un nom de channel dans l\'URL <br>(ex: /chat?channel=channel)</div>';
+      alertContainer.innerHTML = '<div class="chat-alert" style="font-size: ' + size + 'em;">Veuillez entrer un nom de channel dans les paramètres</div>';
       return;
     }
 
@@ -50,12 +48,11 @@ export const chatCtrl: ChatCtrl = {
 
     });
   },
-  updateUI: () => {
-    const getParams = new URLSearchParams(window.location.search);
-
+  async updateUI() {
     const chatContainer = document.getElementById('chat');
-    const sizeStr = getParams.get('size') || '1';
-    let size = parseFloat(sizeStr);
+    const resSize = await fetch(`/api/actions/input/font-size`);
+    let size = parseFloat(await resSize.text())
+
     if (isNaN(size)) {
       size = 1;
     }
@@ -69,10 +66,9 @@ export const chatCtrl: ChatCtrl = {
     });
   },
   subscribe: (message: any) => {
-    console.log('message', message);
     const chatContainer = document.getElementById('chat-alert');
     if (!chatContainer) {
-      throw new Error('Chat alert container not found');
+      return
     }
 
     if (message.html) {

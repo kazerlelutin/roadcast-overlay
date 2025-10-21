@@ -19,6 +19,8 @@ const alertCtrl: AlertCtrl = {
       method: 'POST',
       body: JSON.stringify({ message: message.value }),
     });
+
+    message.value = ''
   },
   clearAlert: () => {
     fetch(`/api/actions/execute/alert/send`, {

@@ -9,10 +9,8 @@ const pinnedCtrl: PinnedCtrl = {
     const pinnedContainer = document.getElementById('pinned-container');
 
     if (!pinnedContainer) return
-
     pinnedContainer.classList.add('alert-pulse');
     pinnedContainer.innerHTML = message.html;
-
     setTimeout(() => {
       if (!pinnedContainer) {
         return;

@@ -9,9 +9,7 @@ export const actionsGET = async () => {
 
   const templatesData: { name: string; content: string }[] = [];
 
-
-
-  for (const template of [...templates.map(template => `templates/${template}`), ...custom.map(custom => `custom/${custom}`)]) {
+  for (const template of [...templates.map(template => `templates/${template}`), ...custom.filter(custom => custom !== '.gitkeep').map(custom => `custom/${custom}`)]) {
 
     const templateFile = Bun.file(`data/${template}`);
     const templateContent = await templateFile.text();

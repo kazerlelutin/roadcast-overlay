@@ -138,13 +138,26 @@ async function start_mon_overlay() {
 - `select` : Liste déroulante
 - `boolean` : Case à cocher
 
+## ⚙️ Paramètres globaux
+
+### Configuration de la taille de police et du nom de chaîne
+
+Les paramètres suivants sont disponibles sur la **page principale** (`/`) et la **page commands** (`/commands`) :
+
+- **Taille de police** : Contrôle la taille globale des textes dans les overlays
+- **Nom de chaîne Twitch** : Définit le nom de votre chaîne pour les fonctionnalités liées à Twitch
+
+Ces paramètres sont stockés dans les fichiers :
+
+- `data/inputs/font-size.txt` : Taille de police (ex: 1.4)
+- `data/inputs/channel-name.txt` : Nom de votre chaîne Twitch
+
 ## 💬 Chat Twitch
 
 ### Configuration
 
-1. Accédez à `http://localhost:3000/chat?channel=VOTRE_CHANNEL`
-2. Remplacez `VOTRE_CHANNEL` par le nom de votre chaîne Twitch
-3. Le chat affichera les 20 derniers messages en temps réel
+1. Accédez à `http://localhost:3000/chat`
+2. Le chat affichera les 20 derniers messages en temps réel
 
 ### Fonctionnalités
 
@@ -164,6 +177,7 @@ async function start_mon_overlay() {
 - **Boutons d'action** : Démarrage/arrêt des overlays
 - **Interface simplifiée** : Optimisée pour l'intégration OBS
 - **Popup d'édition** : Ouverture d'onglets pour modifier les inputs
+- **Paramètres globaux** : Configuration de la taille de police et du nom de chaîne Twitch
 
 ## 🎮 Intégration OBS
 

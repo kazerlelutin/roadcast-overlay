@@ -6,11 +6,14 @@ import { websocketAPI } from "@/src/features/websocket/websocket.store";
 export const chatCtrl: ChatCtrl = {
   client: null as unknown as tmi.Client,
   messages: [],
-  init: () => {
-    const getParams = new URLSearchParams(window.location.search);
-    const channel = getParams.get('channel') || '';
+  async init() {
 
     websocketAPI.subscribe("alert", chatCtrl.subscribe);
+
+    const resChannel = await fetch(`/api/actions/input/channel-name`);
+    const channel = await resChannel.text();
+    const resSize = await fetch(`/api/actions/input/font-size`);
+    const size = await resSize.text();
 
     if (!channel) {
       const alertContainer = document.getElementById('alert-container');
@@ -19,7 +22,7 @@ export const chatCtrl: ChatCtrl = {
         throw new Error('Alert container not found');
       }
 
-      alertContainer.innerHTML = '<div class="chat-alert">Veuillez entrer un nom de channel dans l\'URL <br>(ex: /chat?channel=channel)</div>';
+      alertContainer.innerHTML = '<div class="chat-alert" style="font-size: ' + size + 'em;">Veuillez entrer un nom de channel dans les paramètres</div>';
       return;
     }
 
@@ -45,22 +48,27 @@ export const chatCtrl: ChatCtrl = {
 
     });
   },
-  updateUI: () => {
+  async updateUI() {
     const chatContainer = document.getElementById('chat');
+    const resSize = await fetch(`/api/actions/input/font-size`);
+    let size = parseFloat(await resSize.text())
+
+    if (isNaN(size)) {
+      size = 1;
+    }
 
     if (!chatContainer) {
       throw new Error('Chat container not found');
     }
     cook('chat', () => {
-      chatContainer.innerHTML = chatCtrl.messages.map(message => `<div class="message"><span class="message-username">${message.username}:</span> <span class="message-text">${message.message}</span></div>`).join('');
+      chatContainer.innerHTML = chatCtrl.messages.map(message => `<div class="message" style="font-size:${size}em;"><span class="message-username">${message.username}:</span> <span class="message-text">${message.message}</span></div>`).join('');
       chatContainer.scrollTop = chatContainer.scrollHeight;
     });
   },
   subscribe: (message: any) => {
-    console.log('message', message);
     const chatContainer = document.getElementById('chat-alert');
     if (!chatContainer) {
-      throw new Error('Chat alert container not found');
+      return
     }
 
     if (message.html) {

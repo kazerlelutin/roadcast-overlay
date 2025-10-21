@@ -1,4 +1,3 @@
-import { websocketAPI } from "../websocket/websocket.store";
 import type { AlertCtrl } from "./alert.type";
 
 const alertCtrl: AlertCtrl = {
@@ -20,6 +19,8 @@ const alertCtrl: AlertCtrl = {
       method: 'POST',
       body: JSON.stringify({ message: message.value }),
     });
+
+    message.value = ''
   },
   clearAlert: () => {
     fetch(`/api/actions/execute/alert/send`, {

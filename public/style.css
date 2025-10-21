@@ -194,6 +194,36 @@
     border-color: var(--highlight-color);
   }
 
+  .expand-icon:after {
+    content: '>';
+  }
+
+  button.expand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-small);
+  }
+
+  [data-expanded="false"] .expand-icon {
+    transform: rotate(-90deg);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  [data-expanded="true"] .expand-icon {
+    transform: rotate(90deg);
+    transition: transform 0.2s ease-in-out;
+  }
+
+
+  [data-role="panel"][data-expanded="true"] {
+    display: block;
+  }
+  
+  [data-role="panel"][data-expanded="false"] {
+    display: none !important;
+  }
+
 }
 
 @layer pages {
@@ -274,9 +304,8 @@
     height: 100dvh;
     background: var(--primary-color);
     display: grid;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: auto 1fr auto;
     grid-template-columns: 1fr;
-
     font-size: var(--xl-size);
   }
 
@@ -285,6 +314,8 @@
     height: 100%;
     overflow-y: auto;
     padding: 0 var(--padding-medium);
+    overflow-x: hidden;
+    word-break: normal;
   }
 
   .message-username {
@@ -309,7 +340,7 @@
     display: grid;
     background: var(--primary-color);
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: auto 1fr auto;
     gap: var(--gap-medium);
     padding: var(--padding-medium);
   }
@@ -330,15 +361,30 @@
     animation: alert-pulse 1s infinite;
   }
 
+  .alert-page .message-text {
+    cursor: pointer;
+  }
+
+  .alert-page .message-text:hover {
+    background: var(--highlight-color);
+    color: #ffffff;
+  }
+
+  .alert-page .chat-alert {
+    font-size: var(--normal-size);
+  }
+
   @keyframes alert-pulse {
     0% {
       background: var(--warning-color);
       color: #ffffff;
     }
+
     50% {
       background: var(--primary-color);
       color: var(--warning-color);
     }
+
     100% {
       background: var(--warning-color);
       color: #ffffff;
@@ -565,4 +611,13 @@
 
 .action-create {
   min-width: 100%;
+}
+
+.inputs {
+  width: calc(100% - 4 * var(--padding-small));
+  grid-column: 1/3;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-small);
+  padding: var(--padding-small);
 }

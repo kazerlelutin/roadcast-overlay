@@ -3,6 +3,7 @@ import index from "./index.html";
 import { actionExecuteGET, actionInputGET, actionsGET } from "./src/features/actions/actions.GET";
 import { alertPost } from "./src/features/alert/alert.POST";
 import { actionInputPost } from "./src/features/actions/action.post";
+import { pinnedPost } from "./src/features/pinned-message/pinned-message.POST";
 
 
 export const server = serve({
@@ -35,6 +36,9 @@ export const server = serve({
     },
     "/api/actions/execute/alert/send": {
       POST: alertPost,
+    },
+    "/api/actions/execute/pinned/send": {
+      POST: pinnedPost,
     },
     "/*": index,
   },

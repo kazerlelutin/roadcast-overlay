@@ -39,6 +39,7 @@
 
   <template id="chat">
     <div class="chat-page" id="chat-container">
+      <div class="chat-alert" id="pinned-container"></div>
       <div class="chat" id="chat"></div>
       <div class="alert-container" id="alert-container">
         <div class="chat-alert" id="chat-alert">
@@ -49,8 +50,10 @@
 
   <template id="alert">
     <form class="alert-page" id="alert-form">
+      <div class="chat-alert" id="pinned-container"></div>
+      <div class="chat" id="chat"></div>
       <textarea name="alert" id="alert-textarea" placeholder="Message d'alerte"></textarea>
-      <div class="alert-controls" id="alert-controls"> 
+      <div class="alert-controls" id="alert-controls">
         <button type="button" class="btn" id="alert-button-clear">Effacer</button>
         <button type="button" class="btn" id="alert-button-cancel">Annuler</button>
         <button type="submit" class="btn" id="alert-button">Envoyer</button>
@@ -73,28 +76,27 @@
         </a>
       </header>
       <div class="home-page" id="home-container">
-
         <div class="panel-container">
-
           <div class="actions-container" id="actions-container">
             <div class="actions-list" id="actions-list">
             </div>
           </div>
-
         </div>
         <div class="controls-container" id="controls-container">
           <div class="preview-container" id="preview-container">
             <div class="preview" id="overlay"></div>
             <div class="preview-controls" id="preview-controls"></div>
-            <!-- Lecteur HLS direct (exemple) -->
             <div class="video-preview" id="video-preview" style="margin-top:12px;">
-
             </div>
           </div>
           <div class="controls-container" id="controls-container">
             <div class="control-select" id="control-select">
               <button class="clear-screen" data-action="clear-screen">Effacer l'écran</button>
-              <a href="/alert" class="btn" target="_blank" rel="noopener noreferrer">Alerte</a>
+              <button class="expand" data-role="panel-btn" data-panel="panel-commands" data-expanded="false">
+                paramètres<div class="expand-icon"></div>
+              </button>
+              <div id="panel-commands-slot" data-panel="panel-commands" data-role="panel" data-expanded="false" class="inputs"></div>
+
             </div>
             <div class="tags-container" id="tags-container">
               <select class="tag-select" id="tag-select"></select>
@@ -114,7 +116,11 @@
       </div>
       <div class="control-select" id="control-select">
         <button class="clear-screen" data-action="clear-screen">Effacer l'écran</button>
-        <a href="/alert" class="btn" target="_blank" rel="noopener noreferrer">Alerte</a>
+        <button class="expand" data-role="panel-btn" data-panel="panel-commands" data-expanded="false">
+          paramètres<div class="expand-icon"></div>
+        </button>
+        <div id="panel-commands-slot" data-panel="panel-commands" data-role="panel" data-expanded="false" class="inputs"></div>
+
       </div>
       <div class="panel-container">
         <div class="actions-container" id="actions-container">
@@ -131,6 +137,17 @@
       <h1></h1>
       <div class="about-items-container" id="about-items-container"></div>
     </div>
+  </template>
+
+  <template id="panel-commands">
+      <div class="field">
+        <label for="channel-name">Chaine Twitch</label>
+        <input type="text" id="channel-name" name="channel-name">
+      </div>
+      <div class="field">
+        <label for="field-name">Taille de la police</label>
+        <input type="number"  step=".1" id="font-size" name="font-size">
+      </div>
   </template>
 
 

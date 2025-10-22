@@ -1,229 +1,357 @@
 <div
-  class="countdown-timer"
+  class="countdown"
   description="Compte à rebours animé pour le live"
-  title="Countdown Timer"
+  title="Compte à rebours"
   script="
-  start_countdown_timer,
-  modifier le temps_countdown_timer,
-  stop_countdown_timer"
-  tag="countdown, timer, live"
-  inputs="number:temps_countdown_timer"
+  Afficher_countdown_timer,
+  Start_countdown_timer,
+  Stop_countdown_timer, 
+  Cacher_countdown_timer
+  "
+  tag="countdown, timer"
+  inputs="number:temps_countdown"
 >
-  <div class="countdown-container">
-    <div class="countdown-title">RETOUR DANS</div>
-    <div class="countdown-display" id="countdown-display">
-      <div class="time-unit">
-        <span class="time-value" id="minutes">05</span>
-        <span class="time-label">MIN</span>
+  <div
+    class="countdown-container"
+    id="countdown-container"
+    style="display: none"
+  >
+    <div id="countdown-progress" class="countdown-progress"></div>
+    <div class="countdown-display-container">
+      <div id="countdown-display" class="countdown-display">
+        <div class="digit-container">
+          <div class="digit-wrapper" id="minutes-tens">
+            <div class="digit">0</div>
+          </div>
+          <div class="digit-wrapper" id="minutes-ones">
+            <div class="digit">0</div>
+          </div>
+        </div>
+        <span class="separator">:</span>
+        <div class="digit-container">
+          <div class="digit-wrapper" id="seconds-tens">
+            <div class="digit">0</div>
+          </div>
+          <div class="digit-wrapper" id="seconds-ones">
+            <div class="digit">0</div>
+          </div>
+        </div>
       </div>
-      <div class="time-separator">:</div>
-      <div class="time-unit">
-        <span class="time-value" id="seconds">00</span>
-        <span class="time-label">SEC</span>
-      </div>
-    </div>
-    <div class="countdown-progress">
-      <div class="progress-bar" id="progress-bar"></div>
     </div>
   </div>
-</div>
 
-<script>
-  let countdownInterval
-  let totalSeconds = 300 // 5 minutes par défaut
-  let currentSeconds = totalSeconds
+  <script>
+    let started = false
+    let rafId
+    let totalSeconds = 600
+    let currentSeconds = totalSeconds
+    let lastTime = performance.now()
+    let lastSecond = Math.floor(lastTime / 1000)
 
-  function start_countdown_timer() {
-    const container = document.querySelector('.countdown-timer')
-    if (!container) return
-    // Réinitialiser l'affichage
-    container.style.display = 'block'
-    container.style.animation = 'none'
-
-    currentSeconds = totalSeconds
-
-    updateDisplay()
-
-    countdownInterval = setInterval(() => {
-      currentSeconds--
-      updateDisplay()
-      updateProgress()
+    function animate(currentTime) {
+      if (!started) return
+      const deltaTime = (currentTime - lastTime) / 1000
+      currentSeconds -= deltaTime
 
       if (currentSeconds <= 0) {
-        stop_countdown_timer()
-        // Animation de fin
-        const display = document.getElementById('countdown-display')
-        if (!display) return
-        display.style.animation = 'countdown-end 1s ease-in-out'
+        currentSeconds = 0
+        started = false
+        cancelAnimationFrame(rafId)
+        updateDisplay()
+        updateProgress()
+        addPulseEffect()
+        return
       }
-    }, 1000)
-  }
 
-  function stop_countdown_timer() {
-    const container = document.querySelector('.countdown-timer')
-
-    if (!container) return
-    if (countdownInterval) {
-      clearInterval(countdownInterval)
+      const currentSecondFloor = Math.floor(currentTime / 1000)
+      if (currentSecondFloor > lastSecond) {
+        updateDisplay()
+        lastSecond = currentSecondFloor
+      }
+      updateProgress()
+      lastTime = currentTime
+      requestAnimationFrame(animate)
     }
 
-    // Animation de sortie
-    container.style.animation = 'countdown-exit 0.8s ease-in forwards'
-
-    // Masquer complètement après l'animation
-    setTimeout(() => {
-      if (!container.style) return
-      container.style.display = 'none'
-    }, 800)
-  }
-
-  function updateDisplay() {
-    const minutes = Math.floor(currentSeconds / 60)
-    const seconds = currentSeconds % 60
-
-    if (!document.getElementById('minutes')) return
-    if (!document.getElementById('seconds')) return
-
-    document.getElementById('minutes').textContent = minutes
-      .toString()
-      .padStart(2, '0')
-    document.getElementById('seconds').textContent = seconds
-      .toString()
-      .padStart(2, '0')
-  }
-
-  function updateProgress() {
-    const progress = ((totalSeconds - currentSeconds) / totalSeconds) * 100
-    if (!document.getElementById('progress-bar')) return
-    document.getElementById('progress-bar').style.width = progress + '%'
-  }
-
-  async function change_time_countdown_timer() {
-    const timeRes = await fetch(`/api/actions/input/temps_countdown_timer`)
-    const time = await timeRes.text()
-    const minutes = parseInt(time)
-    totalSeconds = minutes * 60
-    currentSeconds = totalSeconds
-    updateDisplay()
-    updateProgress()
-  }
-
-  globalThis.start_countdown_timer = start_countdown_timer
-  globalThis.stop_countdown_timer = stop_countdown_timer
-  globalThis['modifier le temps_countdown_timer'] = change_time_countdown_timer
-</script>
-
-<style>
-  .countdown-timer {
-    position: absolute;
-    bottom: 2em;
-    right: 2em;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 1.5em;
-    border-radius: 1em;
-    text-align: center;
-    z-index: 1000;
-    box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(0.5em);
-  }
-
-  .countdown-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5em;
-  }
-
-  .countdown-title {
-    font-size: 0.8em;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #ff6b6b;
-  }
-
-  .countdown-display {
-    display: flex;
-    align-items: center;
-    gap: 0.3em;
-    font-size: 2em;
-    font-weight: bold;
-    font-family: 'Courier New', monospace;
-  }
-
-  .time-unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .time-value {
-    font-size: 1.2em;
-    color: #4ecdc4;
-    text-shadow: 0 0 0.5em rgba(78, 205, 196, 0.5);
-  }
-
-  .time-label {
-    font-size: 0.4em;
-    color: #ccc;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .time-separator {
-    font-size: 1.2em;
-    color: #ff6b6b;
-    animation: blink 1s infinite;
-  }
-
-  .countdown-progress {
-    width: 100%;
-    height: 0.3em;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 0.15em;
-    overflow: hidden;
-  }
-
-  .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
-    width: 0%;
-    transition: width 1s linear;
-    border-radius: 0.15em;
-  }
-
-  @keyframes blink {
-    0%,
-    50% {
-      opacity: 1;
+    async function start_countdown_timer() {
+      if (started) return
+      currentSeconds = await get_time()
+      totalSeconds = currentSeconds
+      cleanupDigitAnimations()
+      started = true
+      rafId = requestAnimationFrame(animate)
     }
-    51%,
-    100% {
-      opacity: 0.3;
-    }
-  }
 
-  @keyframes countdown-end {
-    0% {
-      transform: scale(1);
+    function stop_countdown_timer() {
+      if (!started) return
+      started = false
+      cancelAnimationFrame(rafId)
+      currentSeconds = totalSeconds
+      cleanupDigitAnimations()
+      updateDisplay()
+      updateProgress()
+      removePulseEffect()
     }
-    50% {
-      transform: scale(1.2);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
 
-  @keyframes countdown-exit {
-    0% {
-      opacity: 1;
-      transform: scale(1) translateY(0);
+    function addPulseEffect() {
+      const display = document.getElementById('countdown-display')
+      if (display) {
+        display.classList.add('pulse-effect')
+      }
     }
-    100% {
-      opacity: 0;
-      transform: scale(0.8) translateY(2em);
+
+    function removePulseEffect() {
+      const display = document.getElementById('countdown-display')
+      if (display) {
+        display.classList.remove('pulse-effect')
+      }
     }
-  }
-</style>
+
+    function cleanupDigitAnimations() {
+      const digitWrappers = [
+        'minutes-tens',
+        'minutes-ones',
+        'seconds-tens',
+        'seconds-ones',
+      ]
+      digitWrappers.forEach((id) => {
+        const wrapper = document.getElementById(id)
+        if (wrapper) {
+          // Supprimer tous les chiffres sauf  premier
+          const digits = wrapper.querySelectorAll('.digit')
+          for (let i = 1; i < digits.length; i++) {
+            digits[i].remove()
+          }
+          const remainingDigit = wrapper.querySelector('.digit')
+          if (remainingDigit) {
+            remainingDigit.classList.remove('new-digit', 'old-digit')
+            remainingDigit.style.transform = 'translateY(0)'
+          }
+        }
+      })
+    }
+
+    function updateDisplay() {
+      const minutes = Math.floor(currentSeconds / 60)
+      const seconds = currentSeconds % 60
+
+      const minutesStr = Math.floor(minutes).toString().padStart(2, '0')
+      const secondsStr = Math.floor(seconds).toString().padStart(2, '0')
+
+      updateDigit('minutes-tens', minutesStr[0])
+      updateDigit('minutes-ones', minutesStr[1])
+      updateDigit('seconds-tens', secondsStr[0])
+      updateDigit('seconds-ones', secondsStr[1])
+    }
+
+    function updateDigit(elementId, newValue) {
+      const wrapper = document.getElementById(elementId)
+      if (!wrapper) return
+
+      const currentDigit = wrapper.querySelector('.digit')
+      if (!currentDigit) return
+
+      const currentValue = currentDigit.textContent
+
+      if (currentValue === newValue) return
+      if (
+        wrapper.querySelector('.new-digit') ||
+        wrapper.querySelector('.old-digit')
+      ) {
+        return
+      }
+
+      const newDigit = document.createElement('div')
+      newDigit.className = 'digit new-digit'
+      newDigit.textContent = newValue
+
+      wrapper.appendChild(newDigit)
+
+      currentDigit.classList.add('old-digit')
+
+      setTimeout(() => {
+        if (currentDigit.parentNode) {
+          currentDigit.remove()
+        }
+        if (newDigit.parentNode) {
+          newDigit.classList.remove('new-digit')
+          newDigit.classList.add('digit')
+        }
+      }, 300)
+    }
+
+    function updateProgress() {
+      const progress = ((totalSeconds - currentSeconds) / totalSeconds) * 100
+      const progressBar = document.getElementById('countdown-progress')
+      if (!progressBar) return
+      progressBar.style.width = progress + '%'
+    }
+
+    async function get_time() {
+      const timeRes = await fetch(`/api/actions/input/temps_countdown`)
+
+      const resText = await timeRes.text()
+      if (resText) {
+        totalSeconds = parseInt(resText) * 60
+      }
+
+      return totalSeconds
+    }
+
+    function afficher_countdown_timer() {
+      const countdownContainer = document.getElementById('countdown-container')
+      if (countdownContainer) {
+        countdownContainer.style.display = 'block'
+      }
+    }
+
+    function cacher_countdown_timer() {
+      const countdownContainer = document.getElementById('countdown-container')
+      if (countdownContainer) {
+        countdownContainer.style.display = 'none'
+      }
+    }
+
+    globalThis.Afficher_countdown_timer = afficher_countdown_timer
+    globalThis.Cacher_countdown_timer = cacher_countdown_timer
+    globalThis.Start_countdown_timer = start_countdown_timer
+    globalThis.Stop_countdown_timer = stop_countdown_timer
+  </script>
+
+  <style>
+    :root {
+      --color-bg: #f2f2f2;
+      --color-primary: #4088cf;
+      --color-white: #fff;
+      --color-border: #ccc;
+      --color-secondary: #e84855;
+      --color-tertiary: #70cbe6;
+      --color-text: #000;
+      --color-accent: #d9534f;
+      --color-valid: #4caf50;
+      --color-brain: #d433a9;
+      --color-error: #ad2626;
+      --color-success: #00ff00;
+      --color-info: #17a2b8;
+      --color-warning: #ffc107;
+      --color-discord: #5468ff;
+      --color-discord-hover: #656c85cc;
+    }
+
+    .countdown-container {
+      position: absolute;
+      inset: 0;
+    }
+
+    .countdown-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background: var(--color-info);
+      height: 4em;
+      transition: width 100ms ease-in-out;
+    }
+
+    .countdown-display-container {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .countdown-display {
+      font-size: 10em;
+      font-weight: bold;
+      font-family: console, monospace;
+      color: white;
+
+      line-height: 0.9;
+      overflow: hidden;
+      text-shadow: 0.05em 0.05em 0 rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.1em;
+    }
+
+    .digit-container {
+      display: flex;
+      gap: 0.05em;
+    }
+
+    .digit-wrapper {
+      position: relative;
+      width: 0.6em;
+      height: 1em;
+      overflow: hidden;
+    }
+
+    .digit {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .new-digit {
+      transform: translateY(100%);
+      animation: slideIn 0.3s ease-in-out forwards;
+    }
+
+    .old-digit {
+      animation: slideOut 0.3s ease-in-out forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(100%);
+        filter: blur(0.1em);
+      }
+
+      to {
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateY(0);
+      }
+
+      to {
+        transform: translateY(-100%);
+      }
+    }
+
+    .separator {
+      font-size: 0.8em;
+      margin: 0 0.1em;
+    }
+
+    .pulse-effect {
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        filter: brightness(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+        filter: brightness(1.2);
+      }
+
+      100% {
+        transform: scale(1);
+        filter: brightness(1);
+      }
+    }
+  </style>
+</div>

@@ -4,6 +4,7 @@ import tagFilterCtrl from "../../tag-filter/tag-filter.ctrl";
 import type { Ctrl } from "../routes.type";
 import { insertPanel } from "../../panels/panels.utils";
 import { inputFieldsHandler } from "../../input-fields/input-fields.handler";
+import linkFieldCtrl from "../../link-field/link-field.ctrl";
 
 const commandsCtrl: Ctrl = {
   async init() {
@@ -11,6 +12,7 @@ const commandsCtrl: Ctrl = {
     overlayCtrl.init?.();
     tagFilterCtrl.init?.();
     insertPanel('panel-commands', inputFieldsHandler);
+    linkFieldCtrl.init?.();
   },
   cleanUp() {
     actionsCtrl?.cleanUp?.();

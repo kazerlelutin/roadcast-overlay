@@ -4,6 +4,7 @@ import actionsCtrl from '@features/actions/actions.ctrl';
 import tagFilterCtrl from '@features/tag-filter/tag-filter.ctrl';
 import { insertPanel } from '../../panels/panels.utils';
 import { inputFieldsHandler } from '../../input-fields/input-fields.handler';
+import linkFieldCtrl from '../../link-field/link-field.ctrl';
 
 
 const homeCtrl: Ctrl = {
@@ -12,6 +13,7 @@ const homeCtrl: Ctrl = {
     tagFilterCtrl.init?.();
     overlayCtrl.init?.();
     insertPanel('panel-commands', inputFieldsHandler);
+    linkFieldCtrl.init?.();
 
   },
   cleanUp() {

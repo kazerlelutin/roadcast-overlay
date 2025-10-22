@@ -89,18 +89,20 @@
             <div class="video-preview" id="video-preview" style="margin-top:12px;">
             </div>
           </div>
-          <div class="controls-container" id="controls-container">
-            <div class="control-select" id="control-select">
-              <button class="clear-screen" data-action="clear-screen">Effacer l'écran</button>
-              <button class="expand" data-role="panel-btn" data-panel="panel-commands" data-expanded="false">
-                paramètres<div class="expand-icon"></div>
-              </button>
-              <div id="panel-commands-slot" data-panel="panel-commands" data-role="panel" data-expanded="false" class="inputs"></div>
-
-            </div>
-            <div class="tags-container" id="tags-container">
-              <select class="tag-select" id="tag-select"></select>
-              <div class="tag-item" id="tag-item"></div>
+          <div class="flexbox">
+            <div class="controls-container-commands" id="controls-container-commands">
+              <div class="control-select" id="control-select">
+                <button class="clear-screen" data-action="clear-screen">Effacer l'écran</button>
+                <button class="expand" data-role="panel-btn" data-panel="panel-commands" data-expanded="false">
+                  paramètres<div class="expand-icon"></div>
+                </button>
+                <div id="panel-commands-slot" data-panel="panel-commands" data-role="panel" data-expanded="false"
+                  class="inputs"></div>
+              </div>
+              <div class="tags-container" id="tags-container">
+                <select class="tag-select" id="tag-select"></select>
+                <div class="tag-item" id="tag-item"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -119,7 +121,8 @@
         <button class="expand" data-role="panel-btn" data-panel="panel-commands" data-expanded="false">
           paramètres<div class="expand-icon"></div>
         </button>
-        <div id="panel-commands-slot" data-panel="panel-commands" data-role="panel" data-expanded="false" class="inputs"></div>
+        <div id="panel-commands-slot" data-panel="panel-commands" data-role="panel" data-expanded="false"
+          class="inputs"></div>
 
       </div>
       <div class="panel-container">
@@ -140,14 +143,15 @@
   </template>
 
   <template id="panel-commands">
-      <div class="field">
-        <label for="channel-name">Chaine Twitch</label>
-        <input type="text" id="channel-name" name="channel-name">
-      </div>
-      <div class="field">
-        <label for="field-name">Taille de la police</label>
-        <input type="number"  step=".1" id="font-size" name="font-size">
-      </div>
+    <div class="field">
+      <label for="channel-name">Chaine Twitch</label>
+      <input type="text" id="channel-name" name="channel-name">
+    </div>
+    <div class="field">
+      <label for="field-name">Taille de la police</label>
+      <input type="number" step=".1" id="font-size" name="font-size">
+    </div>
+
   </template>
 
 

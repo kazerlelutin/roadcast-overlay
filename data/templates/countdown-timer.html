@@ -9,7 +9,7 @@
   Cacher_countdown_timer
   "
   tag="countdown, timer"
-  inputs="number:temps_countdown"
+  inputs="number:temps_countdown,string:message de fin_countdown"
 >
   <div
     class="countdown-container"
@@ -18,6 +18,7 @@
   >
     <div id="countdown-progress" class="countdown-progress"></div>
     <div class="countdown-display-container">
+      <div id="countdown-message-fin" class="countdown-end-message"></div>
       <div id="countdown-display" class="countdown-display">
         <div class="digit-container">
           <div class="digit-wrapper" id="minutes-tens">
@@ -83,27 +84,41 @@
     }
 
     function stop_countdown_timer() {
-      if (!started) return
-      started = false
       cancelAnimationFrame(rafId)
       currentSeconds = totalSeconds
+
       cleanupDigitAnimations()
       updateDisplay()
-      updateProgress()
       removePulseEffect()
+      updateProgress()
     }
 
-    function addPulseEffect() {
+    async function addPulseEffect() {
       const display = document.getElementById('countdown-display')
+      const endMessageElement = document.getElementById('countdown-message-fin')
+      const messageFin = await get_message_fin()
+      if (endMessageElement) {
+        endMessageElement.innerHTML = messageFin
+        endMessageElement.classList.add('pulse-effect')
+      }
+
       if (display) {
-        display.classList.add('pulse-effect')
+        display.classList.add('hidden')
       }
     }
 
     function removePulseEffect() {
       const display = document.getElementById('countdown-display')
+      const endMessageElement = document.getElementById('countdown-message-fin')
+
+      console.log('removePulseEffect', endMessageElement, display)
+      if (endMessageElement) {
+        endMessageElement.classList.remove('pulse-effect')
+        endMessageElement.innerHTML = ''
+      }
+
       if (display) {
-        display.classList.remove('pulse-effect')
+        display.classList.remove('hidden')
       }
     }
 
@@ -117,7 +132,6 @@
       digitWrappers.forEach((id) => {
         const wrapper = document.getElementById(id)
         if (wrapper) {
-          // Supprimer tous les chiffres sauf  premier
           const digits = wrapper.querySelectorAll('.digit')
           for (let i = 1; i < digits.length; i++) {
             digits[i].remove()
@@ -185,6 +199,14 @@
       const progressBar = document.getElementById('countdown-progress')
       if (!progressBar) return
       progressBar.style.width = progress + '%'
+    }
+
+    async function get_message_fin() {
+      const messageFinRes = await fetch(
+        `/api/actions/input/message de fin_countdown`
+      )
+      const messageFin = await messageFinRes.text()
+      return messageFin
     }
 
     async function get_time() {
@@ -261,12 +283,17 @@
       height: 100%;
     }
 
+    .countdown-end-message {
+      text-align: center;
+      font-size: 7em;
+    }
+
+    .countdown-end-message,
     .countdown-display {
       font-size: 10em;
       font-weight: bold;
       font-family: console, monospace;
       color: white;
-
       line-height: 0.9;
       overflow: hidden;
       text-shadow: 0.05em 0.05em 0 rgba(0, 0, 0, 0.3);
@@ -304,6 +331,10 @@
 
     .old-digit {
       animation: slideOut 0.3s ease-in-out forwards;
+    }
+
+    .hidden {
+      display: none;
     }
 
     @keyframes slideIn {

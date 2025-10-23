@@ -178,13 +178,55 @@ Ces paramètres sont stockés dans les fichiers :
 - **Interface simplifiée** : Optimisée pour l'intégration OBS
 - **Popup d'édition** : Ouverture d'onglets pour modifier les inputs
 - **Paramètres globaux** : Configuration de la taille de police et du nom de chaîne Twitch
+- **Sélecteur d'overlay** : Choix entre Alpha, Tango et Charlie pour chaque action
+
+## 🎯 Sélecteur d'overlays
+
+### Fonctionnement
+
+Le système propose un **sélecteur d'overlays** qui permet de choisir entre 3 overlays distincts :
+
+- **Alpha** : Overlay par défaut
+- **Tango** : Overlay secondaire
+- **Charlie** : Overlay tertiary
+
+### Utilisation
+
+#### Dans la preview
+
+- Le sélecteur est disponible dans la zone de preview de la page principale
+- Permet de tester les overlays en temps réel
+- Changement instantané de l'overlay affiché
+
+#### Dans les actions
+
+- Chaque action dispose de son propre sélecteur d'overlay
+- Permet de spécifier quel overlay utiliser pour chaque action
+- Les actions sont exécutées sur l'overlay sélectionné
+
+### URLs des overlays
+
+- **Alpha** : `http://localhost:3000/alpha`
+- **Tango** : `http://localhost:3000/tango`
+- **Charlie** : `http://localhost:3000/charlie`
 
 ## 🎮 Intégration OBS
 
-### Overlay principal
+### Overlays disponibles
+
+Le système propose maintenant **3 overlays distincts** avec leurs propres URLs :
+
+- **Alpha** : `http://localhost:3000/alpha`
+- **Tango** : `http://localhost:3000/tango`
+- **Charlie** : `http://localhost:3000/charlie`
+
+### Configuration OBS
 
 1. Ajoutez une source "Navigateur Web"
-2. URL : `http://localhost:3000/overlay`
+2. Choisissez l'URL de l'overlay souhaité :
+   - Alpha : `http://localhost:3000/alpha`
+   - Tango : `http://localhost:3000/tango`
+   - Charlie : `http://localhost:3000/charlie`
 3. Résolution : 1920x1080 (recommandé)
 4. FPS : 30
 
@@ -227,6 +269,8 @@ Pour afficher le chat Twitch :
 - ✅ Chat Twitch intégré
 - ✅ Page de commandes dédiée
 - ✅ Système d'alertes
+- ✅ Sélecteur d'overlays (Alpha, Tango, Charlie)
+- ✅ URLs dédiées pour chaque overlay
 
 ## 🔧 Développement
 

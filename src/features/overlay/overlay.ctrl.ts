@@ -5,15 +5,34 @@ import { OVERLAY_CONTAINER_ID } from "./overlay.const";
 const activeActionInstances = new Map<number, string[]>();
 
 const overlayCtrl: OverlayCtrl = {
-  init: () => {
-    websocketAPI.subscribe("overlay", overlayCtrl.subscribe);
+  init: (overlay: string = 'alpha') => {
+    websocketAPI.subscribe(overlay, overlayCtrl.subscribe);
     overlayCtrl.setupResizeObserver();
+
     const clearScreenButton = document.querySelector('[data-action="clear-screen"]');
     if (clearScreenButton) {
       clearScreenButton.addEventListener('click', overlayCtrl.clearScreen);
     }
+
+    const formOverlay = document.getElementById('overlay-preview-form')
+    if (formOverlay) {
+      formOverlay.addEventListener('click', overlayCtrl.choiceOverlay)
+    }
+  },
+  async choiceOverlay() {
+    const formOverlay = document.getElementById('overlay-preview-form')
+    if (!formOverlay) return;
+    const formData = new FormData(formOverlay as HTMLFormElement);
+    const overlay = formData.get('overlay') as string;
+    const overlayContainer = document.getElementById('overlay');
+    if (!overlayContainer) return;
+
+    websocketAPI.unsubscribe(overlayContainer.getAttribute('data-overlay') as string, overlayCtrl.subscribe);
+    overlayContainer.setAttribute('data-overlay', overlay);
+    websocketAPI.subscribe(overlay, overlayCtrl.subscribe);
   },
   subscribe: (message) => {
+    console.log(message)
     const overlayContainer = document.getElementById(OVERLAY_CONTAINER_ID);
     if (!overlayContainer) {
       throw new Error('Overlay container not found');
@@ -27,7 +46,6 @@ const overlayCtrl: OverlayCtrl = {
 
     const isExists = overlayContainer.querySelector(`[data-action-id="${message.id}"]`);
     if (!isExists) {
-
       const div = document.createElement('div');
       div.innerHTML = message.html;
       (div.firstChild as HTMLElement)?.setAttribute('data-action-id', message.id);
@@ -74,7 +92,13 @@ const overlayCtrl: OverlayCtrl = {
     overlayContainer.style.fontSize = (16 * scale).toFixed(2) + 'px';
   },
   clearScreen: async () => {
-    await fetch(`/api/actions/execute/clear/screen`);
+    const formOverlay = document.getElementById('overlay-preview-form')
+    if (!formOverlay) return;
+    const formData = new FormData(formOverlay as HTMLFormElement);
+    const overlay = formData.get('overlay') as string;
+    const overlayContainer = document.getElementById('overlay');
+    if (!overlayContainer) return;
+    await fetch(`/api/actions/execute/clear/screen/${overlay}`);
   },
   cleanUp: () => {
     websocketAPI.unsubscribe("overlay", overlayCtrl.subscribe);

@@ -11,9 +11,24 @@ export const LINK_FIELDS = [
     value: 'http://localhost:3000/commands',
   },
   {
-    name: 'overlay-url',
-    label: 'URL de la page d\'overlay',
-    value: 'http://localhost:3000/overlay',
+    name: 'alert-url',
+    label: 'URL de la page d\'alert',
+    value: 'http://localhost:3000/alert',
+  },
+  {
+    name: 'alpha-url',
+    label: 'URL de la page d\'overlay Alpha',
+    value: 'http://localhost:3000/alpha',
+  },
+  {
+    name: 'tango-url',
+    label: 'URL de la page d\'overlay Tango',
+    value: 'http://localhost:3000/tango',
+  },
+  {
+    name: 'charlie-url',
+    label: 'URL de la page d\'overlay Charlie',
+    value: 'http://localhost:3000/charlie',
   },
   {
     name: 'home-url',

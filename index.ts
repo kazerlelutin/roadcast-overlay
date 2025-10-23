@@ -31,7 +31,7 @@ export const server = serve({
     "/api/actions/input/:name": {
       GET: actionInputGET,
     },
-    "/api/actions/execute/:id/:script": {
+    "/api/actions/execute/:id/:script/:overlay": {
       GET: actionExecuteGET,
     },
     "/api/actions/execute/alert/send": {

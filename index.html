@@ -28,6 +28,26 @@
       </div>
       <p class="action-description" data-role="text"></p>
       <div class="action-tags" data-role="tags"></div>
+
+
+      <form class="command-overlay" data-role="overlay" data-action-id="">      
+        <div>OVERLAY:</div>
+        <div class="overlay-item" data-role="overlay-item">
+          <input type="radio" id="overlay-default-choice" name="overlay" value="alpha" checked>
+          <label for="overlay-default-choice">Alpha</label>
+        </div>
+        
+        <div class="overlay-item" data-role="overlay-item">
+          <input type="radio" id="second-overlay-choice" name="overlay" value="tango">
+          <label for="second-overlay-choice">Tango</label>
+        </div>
+
+        <div class="overlay-item" data-role="overlay-item">
+          <input type="radio" id="alert-overlay-choice" name="overlay" value="charlie">
+          <label for="alert-overlay-choice">Charlie</label>
+        </div>
+
+      </form>
       <div class="action-inputs" data-role="inputs"></div>
     </div>
   </template>
@@ -81,11 +101,25 @@
         </div>
         <div class="controls-container" id="controls-container">
           <div class="preview-container" id="preview-container">
-            <div class="preview" id="overlay"></div>
-            <div class="preview-controls" id="preview-controls"></div>
-            <div class="video-preview" id="video-preview" style="margin-top:12px;">
-            </div>
+            <div class="preview" id="overlay" data-overlay="default"></div>
           </div>
+            <form class="preview-overlay" data-role="overlay" id='overlay-preview-form'>      
+              <div class="overlay-item" data-role="overlay-item">
+                <input type="radio" id="overlay-preview-choice" name="overlay" value="alpha" checked>
+                <label for="overlay-preview-choice">Alpha</label>
+              </div>
+              
+              <div class="overlay-item" data-role="overlay-item">
+                <input type="radio" id="second-preview-choice" name="overlay" value="tango">
+                <label for="second-preview-choice">Tango</label>
+              </div>
+      
+              <div class="overlay-item" data-role="overlay-item">
+                <input type="radio" id="alert-preview-choice" name="overlay" value="charlie">
+                <label for="alert-preview-choice">Charlie</label>
+              </div>
+            </form>
+
           <div class="flexbox">
             <div class="controls-container-commands" id="controls-container-commands">
               <div class="control-select" id="control-select">
@@ -148,7 +182,6 @@
       <label for="field-name">Taille de la police</label>
       <input type="number" step=".1" id="font-size" name="font-size">
     </div>
-
   </template>
 
 

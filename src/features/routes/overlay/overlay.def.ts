@@ -1,6 +1,8 @@
 import type { RouteDef } from "../routes.type";
-import sliderCtrl from "./overlay.ctrl";
+import { alphaOverlayCtrl, tangoOverlayCtrl, charlieOverlayCtrl } from "./overlay.ctrl";
 
-const route: RouteDef = ['/overlay', { path: '/overlay', title: 'Overlay', templateId: 'overlay', ctrl: sliderCtrl }]
+export const alphaRoute: RouteDef = ['/alpha', { path: '/alpha', title: 'Overlay', templateId: 'overlay', ctrl: alphaOverlayCtrl }]
 
-export default route
+export const tangoRoute: RouteDef = ['/tango', { path: '/tango', title: 'Overlay', templateId: 'overlay', ctrl: tangoOverlayCtrl }]
+
+export const charlieRoute: RouteDef = ['/charlie', { path: '/charlie', title: 'Overlay', templateId: 'overlay', ctrl: charlieOverlayCtrl }]

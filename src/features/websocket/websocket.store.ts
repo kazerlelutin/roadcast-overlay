@@ -56,6 +56,7 @@ export const websocketAPI = {
 
   // Envoyer un message à une room
   sendToRoom(room: string, data: any) {
+
     if (websocketStore.isConnected && websocketStore.socket) {
       websocketStore.socket.send(JSON.stringify({
         type: 'message',

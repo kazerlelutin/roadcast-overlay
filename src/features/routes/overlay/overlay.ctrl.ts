@@ -1,16 +1,29 @@
 import type { Ctrl } from '../routes.type';
 import overlayCtrl from '../../overlay/overlay.ctrl';
 
-
-const sliderCtrl: Ctrl = {
+export const alphaOverlayCtrl: Ctrl = {
   init() {
-
-    overlayCtrl.init?.();
-
+    overlayCtrl.init?.('alpha');
   },
   cleanUp() {
     overlayCtrl?.cleanUp?.();
   }
 }
 
-export default sliderCtrl;
+export const tangoOverlayCtrl: Ctrl = {
+  init() {
+    overlayCtrl.init?.('tango');
+  },
+  cleanUp() {
+    overlayCtrl?.cleanUp?.();
+  }
+}
+
+export const charlieOverlayCtrl: Ctrl = {
+  init() {
+    overlayCtrl.init?.('charlie');
+  },
+  cleanUp() {
+    overlayCtrl?.cleanUp?.();
+  }
+}

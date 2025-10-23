@@ -20,6 +20,7 @@ const websocketCtrl: WebSocketCtrl = {
     socket.onopen = () => {
       websocketStore.isConnected = true;
       websocketStore.subscriptions.forEach((_, room) => {
+
         socket.send(JSON.stringify({
           type: 'subscribe',
           room: room
@@ -30,7 +31,6 @@ const websocketCtrl: WebSocketCtrl = {
     socket.onmessage = (event: MessageEvent) => {
       try {
         const message = JSON.parse(event.data);
-
         if (message.type.match(/message|action|handler/i) && message.room) {
           const roomSubs = websocketStore.subscriptions.get(message.room);
           if (roomSubs) {

@@ -64,6 +64,7 @@ const actionsCtrl: ActionsCtrl = {
     const descElement = actionElement.querySelector('.action-description') as HTMLElement;
     const tagsElement = actionElement.querySelector('.action-tags') as HTMLElement;
     const inputsElement = actionElement.querySelector('.action-inputs') as HTMLElement;
+    const overlayElement = actionElement.querySelector('.command-overlay') as HTMLElement;
 
     const actionControls = actionElement.querySelector('.action-controls') as HTMLElement;
     const actionsFragment = document.createDocumentFragment();
@@ -83,6 +84,21 @@ const actionsCtrl: ActionsCtrl = {
     if (descElement) descElement.textContent = action.description || '';
     if (actionControls) actionControls.appendChild(actionsFragment);
 
+    if (overlayElement) {
+      overlayElement.setAttribute('data-action-id', action.id);
+
+      const inputsElement = overlayElement.querySelectorAll('input')
+      inputsElement.forEach(element => {
+        const id = element.id;
+        element.id = id + '-' + action.id;
+      });
+      const labelsElement = overlayElement.querySelectorAll('label')
+      labelsElement.forEach(element => {
+        const id = element.htmlFor;
+        element.htmlFor = id + '-' + action.id;
+      });
+    }
+
     if (tagsElement) {
 
       tagsElement.replaceChildren(
@@ -100,8 +116,10 @@ const actionsCtrl: ActionsCtrl = {
           const element = document.createElement('div');
           const [type, name] = input.split(':');
           const label = document.createElement('label');
+
           label.textContent = name?.split('_')[0]?.toUpperCase() || '';
           const inputElement = document.createElement('input');
+
           inputElement.setAttribute('type', type || '');
           inputElement.setAttribute('name', name || '');
           element.appendChild(label);
@@ -130,6 +148,7 @@ const actionsCtrl: ActionsCtrl = {
         fetch(`/api/actions/input/${name}`).then(async (value) => {
           const valueContent = await value.text();
           const element = document.querySelector(`input[name="${name}"]`) as HTMLInputElement;
+
           if (element) {
             element.value = valueContent;
           }
@@ -144,10 +163,21 @@ const actionsCtrl: ActionsCtrl = {
     const target = event.target as HTMLElement;
     const action = target.closest('.action-item') as HTMLElement;
 
+    let overlay = 'default';
     if (!action) return;
 
     const actionId = target.getAttribute('data-action-id');
     const actionType = target.getAttribute('data-action');
+
+    const formOverlay = document.querySelector('form[data-action-id="' + actionId + '"]') as HTMLFormElement;
+    if (!formOverlay) return;
+
+    if (formOverlay) {
+      const formData = new FormData(formOverlay);
+      overlay = formData.get('overlay') as string;
+      console.log('overlay', overlay);
+    }
+
 
     const allActionControls = document.querySelectorAll(`button[data-action-id="${actionId}"]`);
 
@@ -164,7 +194,7 @@ const actionsCtrl: ActionsCtrl = {
     }
 
     try {
-      await fetch(`/api/actions/execute/${actionId}/${actionType}`);
+      await fetch(`/api/actions/execute/${actionId}/${actionType}/${overlay}`);
 
     } catch (error) {
       console.error('Erreur lors de l\'exécution:', error);

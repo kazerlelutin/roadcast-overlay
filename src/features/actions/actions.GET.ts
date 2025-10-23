@@ -23,12 +23,11 @@ export const actionsGET = async () => {
 }
 
 export const actionExecuteGET = async (req: BunRequest) => {
-  const { id, script } = req.params as { id: string; script: string };
-
+  const { id, script, overlay } = req.params as { id: string; script: string; overlay: string };
   if (id === 'clear' && script === 'screen') {
-    server.publish("overlay", JSON.stringify({
+    server.publish(overlay, JSON.stringify({
       type: 'action',
-      room: 'overlay',
+      room: overlay,
       data: { id: 'clear', script: 'screen', html: '' }
     }));
     return new Response("ok", { status: 200 });
@@ -49,9 +48,9 @@ export const actionExecuteGET = async (req: BunRequest) => {
   }
 
   const html = await templateFile.text();
-  server.publish("overlay", JSON.stringify({
+  server.publish(overlay, JSON.stringify({
     type: 'action',
-    room: 'overlay',
+    room: overlay,
     data: { id, script, html }
   }));
 

@@ -513,6 +513,7 @@
 }
 
 .action-inputs {
+  margin-top: var(--gap-medium);
   display: flex;
   flex-direction: column;
   gap: var(--gap-small);

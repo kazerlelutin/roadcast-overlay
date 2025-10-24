@@ -1,4 +1,11 @@
+@font-face {
+  font-family: Bebas Neue; /* set name */
+  src: url(fonts/Bebas_Neue/BebasNeue-Regular.ttf);
+}
+
 @layer base, components, utilities, pages;
+
+
 
 @layer base {
   :root {
@@ -262,6 +269,8 @@
     margin: var(--padding-medium);
   }
 
+
+
   /* ==== overlay PAGE ==== */
   .overlay-page {
     width: 100dvw;
@@ -389,6 +398,50 @@
       background: var(--warning-color);
       color: #ffffff;
     }
+  }
+
+  @media (max-width: 768px) {
+
+    .panel-container,
+    .preview-container,
+    .controls-container {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: var(--gap-small);
+      height: auto !important;
+    }
+
+    .home-page {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: var(--gap-small);
+      margin: 0 !important;
+      width: 100% !important;
+    }
+
+    .actions-list {
+      padding: 0 !important;
+    }
+
+    .home {
+      height: auto !important;
+      margin: 0 !important;
+      padding: var(--padding-medium) !important;
+      width: calc(100% - 2 * var(--padding-medium)) !important;
+    }
+
+    .flexbox {
+      height: auto !important;
+    }
+
+    .controls-container-commands {
+      position: relative !important;
+    }
+
+    .actions-list {
+      position: relative !important;
+    }
+
   }
 }
 

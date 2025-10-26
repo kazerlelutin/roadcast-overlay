@@ -32,6 +32,7 @@ export const actionsStore = createStore<ActionsStore>({
       const tags = el.getAttribute('tag')?.split(',').map((tag: string) => tag.trim());
       const scripts = el.getAttribute('script')?.split(',').map((script: string) => script.trim());
       const inputs = el.getAttribute('inputs')?.split(',').map((input: string) => input.trim());
+      const slot = el.getAttribute('slot');
 
       actionsStore.actions.push({
         id: template.name,
@@ -42,6 +43,7 @@ export const actionsStore = createStore<ActionsStore>({
         html: template.content || '',
         inputs: inputs || [],
         suffix: template.suffix || '',
+        slot: slot ? parseInt(slot) : 0,
       });
     })
     return actionsStore.actions

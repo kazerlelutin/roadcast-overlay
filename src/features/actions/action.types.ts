@@ -38,6 +38,7 @@ export interface Action {
   description?: string;
   tags: string[];
   html: string;
+  slot?: number;
   suffix?: string;
   script: string[]
   inputs: string[]

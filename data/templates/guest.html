@@ -5,6 +5,7 @@
   suffix="guest_"
   script="start_guest, stop_guest"
   tag="guest, invité"
+  slot="4"
   inputs="text:name_guest, text:fonction_guest, text:pseudo_guest"
 >
   <div class="guest-container" style="animation: none; display: none">
@@ -22,6 +23,22 @@
     container.style.animation = 'none'
 
     const inputs = ['name', 'fonction', 'pseudo']
+
+    const resSlot = await fetch(
+      `/api/actions/input/guest${suffix ? '+' + suffix : ''}_slot`
+    )
+    const slotStr = (await resSlot.text()) || '1'
+    const slot = parseInt(slotStr)
+
+    const guestContainer = document.querySelector('#overlay')
+    if (guestContainer) {
+      const guestContainerWidth = guestContainer.offsetWidth
+
+      const segment = Math.floor(guestContainerWidth / 4)
+      console.log(segment, guestContainerWidth)
+      guestContainer.style.left = `${segment * slot - segment}px`
+    }
+
     for (const input of inputs) {
       const res = await fetch(
         `/api/actions/input/${input}_guest${suffix ? '_' + suffix : ''}`
@@ -95,7 +112,7 @@
     background: var(--color-bg);
     color: var(--color-text);
     padding: 1em 1.5em;
-    min-width: 20em;
+    min-width: 10em;
     border-left: 2em solid var(--color-primary);
   }
 

@@ -2,6 +2,7 @@
   class="countdown"
   description="Compte à rebours animé pour le live"
   title="Compte à rebours"
+  slot="9"
   script="
   Afficher_countdown_timer,
   Start_countdown_timer,
@@ -87,6 +88,7 @@
       cancelAnimationFrame(rafId)
       currentSeconds = totalSeconds
 
+      started = false
       cleanupDigitAnimations()
       updateDisplay()
       removePulseEffect()
@@ -221,8 +223,58 @@
       return totalSeconds
     }
 
-    function afficher_countdown_timer() {
+    async function afficher_countdown_timer(suffix = '') {
+      const resSlot = await fetch(
+        `/api/actions/input/countdown-timer${suffix ? '+' + suffix : ''}_slot`
+      )
+      const slotStr = (await resSlot.text()) || '1'
+      const slot = parseInt(slotStr)
+
       const countdownContainer = document.getElementById('countdown-container')
+
+      const containerDisplayContainer = document.querySelector(
+        '.countdown-display-container'
+      )
+
+      if (containerDisplayContainer) {
+        if (slot === 1) {
+          containerDisplayContainer.style.justifyContent = 'center'
+          containerDisplayContainer.style.alignItems = 'center'
+        }
+        if (slot === 2) {
+          containerDisplayContainer.style.justifyContent = 'flex-start'
+          containerDisplayContainer.style.alignItems = 'center'
+        }
+        if (slot === 3) {
+          containerDisplayContainer.style.justifyContent = 'flex-end'
+          containerDisplayContainer.style.alignItems = 'center'
+        }
+        if (slot === 4) {
+          containerDisplayContainer.style.justifyContent = 'flex-start'
+          containerDisplayContainer.style.alignItems = 'flex-end'
+        }
+        if (slot === 5) {
+          containerDisplayContainer.style.justifyContent = 'center'
+          containerDisplayContainer.style.alignItems = 'flex-end'
+        }
+        if (slot === 6) {
+          containerDisplayContainer.style.justifyContent = 'flex-end'
+          containerDisplayContainer.style.alignItems = 'flex-end'
+        }
+        if (slot === 7) {
+          containerDisplayContainer.style.justifyContent = 'flex-end'
+          containerDisplayContainer.style.alignItems = 'flex-start'
+        }
+        if (slot === 8) {
+          containerDisplayContainer.style.justifyContent = 'center'
+          containerDisplayContainer.style.alignItems = 'center'
+        }
+        if (slot === 9) {
+          containerDisplayContainer.style.justifyContent = 'flex-start'
+          containerDisplayContainer.style.alignItems = 'center'
+        }
+      }
+
       if (countdownContainer) {
         countdownContainer.style.display = 'block'
       }
@@ -282,7 +334,8 @@
       justify-content: center;
       align-items: center;
       width: 100%;
-      height: 100%;
+      height: calc(100% - 4.2em);
+      padding: 4.2em;
     }
 
     .countdown-end-message {

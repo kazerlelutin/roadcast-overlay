@@ -25,7 +25,6 @@ const actionsCtrl: ActionsCtrl = {
         fragment.appendChild(actionElement);
       });
 
-
     cook('actions-list', () => {
       actionsList.replaceChildren(fragment);
     });
@@ -41,7 +40,6 @@ const actionsCtrl: ActionsCtrl = {
       throw new Error('Actions list not found');
     }
 
-
     actionsCtrl.updateUI();
     actionsCtrl.subscribeActions = actionsStore.subscribe(() => actionsCtrl.updateUI());
     actionsList.addEventListener('click', actionsCtrl.handleActionClick);
@@ -51,8 +49,6 @@ const actionsCtrl: ActionsCtrl = {
 
   },
   createActionElement(action: Action): HTMLElement {
-
-
 
     const template = document.getElementById('action-item-template') as HTMLTemplateElement;
     if (!template) return document.createElement('div');
@@ -73,7 +69,49 @@ const actionsCtrl: ActionsCtrl = {
     const actionControls = actionElement.querySelector('.action-controls') as HTMLElement;
     const actionsFragment = document.createDocumentFragment();
 
-    const scripts = [...action?.script]
+    const scripts = []
+
+
+    if (action.slot) {
+      const slotElement = document.createElement('div');
+      slotElement.className = 'action-slot-container';
+      const label = document.createElement('label');
+      label.textContent = 'Slot';
+      label.className = 'action-slot-label';
+      label.setAttribute('for', 'slot' + action.id);
+      slotElement.appendChild(label);
+      const input = document.createElement('input');
+      input.setAttribute('type', 'number');
+      input.setAttribute('name', 'slot');
+      input.setAttribute('value', "1");
+      input.setAttribute('min', '1')
+      input.setAttribute('max', action.slot.toString());
+      input.setAttribute('step', '1')
+      input.setAttribute('id', 'slot' + action.id);
+      input.className = 'action-slot';
+
+      const slotName = action.id.replace(/\.html/g, '') + '_slot';
+      fetch(`/api/actions/input/${slotName}`).then(async (res) => {
+        const slot = await res.text();
+        input.value = slot;
+      });
+      input.addEventListener('change', (event: Event) => {
+        const target = event.target as HTMLInputElement;
+        const value = target.value;
+        fetch(`/api/actions/input`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: slotName, value }),
+        });
+      });
+
+      slotElement.appendChild(input);
+      actionsFragment.appendChild(slotElement);
+    }
+
+    scripts.push(...action?.script)
 
     if (action.suffix) {
       scripts.push(`🗑️_${action.suffix}`);

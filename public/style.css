@@ -737,6 +737,32 @@
   margin: var(--margin-medium) 0;
 }
 
+.action-slot-container {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+input.action-slot {
+  display: block;
+  position: relative;
+  min-width: fit-content;
+  height: 100%;
+  padding: var(--gap-small);
+}
+
+.action-slot-label {
+
+  left: 0;
+  top: -.8rem;
+  z-index: 1;
+  font-size:.6em;
+}
+
+
+
+
 
 
 /* ==== TAG ==== */

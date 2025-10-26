@@ -41,6 +41,7 @@ const actionsCtrl: ActionsCtrl = {
       throw new Error('Actions list not found');
     }
 
+
     actionsCtrl.updateUI();
     actionsCtrl.subscribeActions = actionsStore.subscribe(() => actionsCtrl.updateUI());
     actionsList.addEventListener('click', actionsCtrl.handleActionClick);
@@ -50,15 +51,18 @@ const actionsCtrl: ActionsCtrl = {
 
   },
   createActionElement(action: Action): HTMLElement {
+
+
+
     const template = document.getElementById('action-item-template') as HTMLTemplateElement;
     if (!template) return document.createElement('div');
-
 
     const clone = template.content.cloneNode(true) as DocumentFragment;
     const actionElement = clone.querySelector('.action-item') as HTMLElement;
 
     if (!actionElement) return document.createElement('div');
     actionElement.setAttribute('data-action-name', action.name);
+    actionElement.setAttribute('data-action-suffix', action.suffix || '');
 
     const nameElement = actionElement.querySelector('.action-name') as HTMLElement;
     const descElement = actionElement.querySelector('.action-description') as HTMLElement;
@@ -69,18 +73,33 @@ const actionsCtrl: ActionsCtrl = {
     const actionControls = actionElement.querySelector('.action-controls') as HTMLElement;
     const actionsFragment = document.createDocumentFragment();
 
+    const scripts = [...action?.script]
 
-    action?.script.forEach((script: string) => {
+    if (action.suffix) {
+      scripts.push(`🗑️_${action.suffix}`);
+    } else {
+      scripts.push(`📋_${action.suffix}`);
+    }
+    scripts.forEach((script: string) => {
 
       const button = document.createElement('button');
       button.setAttribute('data-action-id', action.id);
+      button.setAttribute('data-action-id-param', 'testg');
       button.className = 'action-custom';
+      if (script.startsWith('🗑️')) {
+        button.setAttribute('data-trash', 'true');
+      }
+      if (script.startsWith('📋')) {
+        button.setAttribute('data-copy', 'true');
+      }
       button.textContent = script?.split('_')[0] || 'Custom';
+      button.setAttribute('type', 'button');
       button.setAttribute('data-action', script);
+      button.setAttribute('data-prefix', action.suffix || '');
       actionsFragment.appendChild(button);
     });
 
-    if (nameElement) nameElement.textContent = action.name;
+    if (nameElement) nameElement.textContent = action.suffix ? action.name + ' ' + action.suffix : action.name;
     if (descElement) descElement.textContent = action.description || '';
     if (actionControls) actionControls.appendChild(actionsFragment);
 
@@ -115,13 +134,15 @@ const actionsCtrl: ActionsCtrl = {
         ...[...(action.inputs || [])].map(input => {
           const element = document.createElement('div');
           const [type, name] = input.split(':');
+          const nameWithSuffix = name + (action.suffix ? '_' + action.suffix : '');
           const label = document.createElement('label');
 
-          label.textContent = name?.split('_')[0]?.toUpperCase() || '';
+          label.textContent = name?.split('_')[0]?.toUpperCase() || '' + ' ';
+
           const inputElement = document.createElement('input');
 
           inputElement.setAttribute('type', type || '');
-          inputElement.setAttribute('name', name || '');
+          inputElement.setAttribute('name', nameWithSuffix || '');
           element.appendChild(label);
           element.appendChild(inputElement);
           inputElement.addEventListener('change', (event: Event) => {
@@ -134,7 +155,7 @@ const actionsCtrl: ActionsCtrl = {
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ name, value }),
+              body: JSON.stringify({ name: nameWithSuffix, value }),
             }).catch(error => {
               console.error('Erreur lors de l\'envoi:', error);
             });
@@ -145,9 +166,11 @@ const actionsCtrl: ActionsCtrl = {
 
       for (const input of action?.inputs || []) {
         const [, name] = input.split(':');
-        fetch(`/api/actions/input/${name}`).then(async (value) => {
+        const nameWithSuffix = name + (action.suffix ? '_' + action.suffix : '');
+        fetch(`/api/actions/input/${nameWithSuffix}`).then(async (value) => {
           const valueContent = await value.text();
-          const element = document.querySelector(`input[name="${name}"]`) as HTMLInputElement;
+
+          const element = document.querySelector(`input[name="${nameWithSuffix}"]`) as HTMLInputElement;
 
           if (element) {
             element.value = valueContent;
@@ -160,6 +183,7 @@ const actionsCtrl: ActionsCtrl = {
   },
 
   handleActionClick: async (event: Event) => {
+    event.preventDefault();
     const target = event.target as HTMLElement;
     const action = target.closest('.action-item') as HTMLElement;
 
@@ -168,6 +192,28 @@ const actionsCtrl: ActionsCtrl = {
 
     const actionId = target.getAttribute('data-action-id');
     const actionType = target.getAttribute('data-action');
+    const actionTrash = target.getAttribute('data-trash');
+    const actionCopy = target.getAttribute('data-copy');
+    const suffix = target.getAttribute('data-prefix');
+
+    if (actionTrash) {
+
+      await fetch(`/api/actions/execute/delete/${actionId}`, {
+        method: 'DELETE',
+      });
+      await actionsStore.getActions();
+      actionsCtrl.updateUI();
+      return;
+    }
+    if (actionCopy) {
+      await fetch(`/api/actions/execute/copy/${actionId}`, {
+        method: 'POST',
+        body: JSON.stringify({ actionId }),
+      });
+      await actionsStore.getActions();
+      actionsCtrl.updateUI();
+    }
+
 
     const formOverlay = document.querySelector('form[data-action-id="' + actionId + '"]') as HTMLFormElement;
     if (!formOverlay) return;
@@ -175,9 +221,7 @@ const actionsCtrl: ActionsCtrl = {
     if (formOverlay) {
       const formData = new FormData(formOverlay);
       overlay = formData.get('overlay') as string;
-      console.log('overlay', overlay);
     }
-
 
     const allActionControls = document.querySelectorAll(`button[data-action-id="${actionId}"]`);
 
@@ -194,8 +238,7 @@ const actionsCtrl: ActionsCtrl = {
     }
 
     try {
-      await fetch(`/api/actions/execute/${actionId}/${actionType}/${overlay}`);
-
+      await fetch(`/api/actions/execute/${actionId}/${actionType}+${suffix}/${overlay} `);
     } catch (error) {
       console.error('Erreur lors de l\'exécution:', error);
     }

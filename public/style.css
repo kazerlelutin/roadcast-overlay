@@ -102,6 +102,17 @@
     background: var(--secondary-dark-color);
   }
 
+
+
+
+  .btn[data-trash="true"]:hover {
+    background: var(--warning-dark-color);
+  }
+
+  .btn[data-trash="true"]:hover {
+    background: var(--warning-dark-color);
+  }
+
   /* ==== SCROLLBAR ==== */
   ::-webkit-scrollbar {
     width: 8px;
@@ -592,6 +603,15 @@
   cursor: pointer;
   font-size: var(--normal-size);
   transition: background-color 0.2s;
+}
+
+.action-controls button[data-trash="true"] {
+  background: var(--warning-color);
+  color: #ffffff;
+}
+
+.action-controls button[data-copy="true"] {
+  background: var(--info-color);
 }
 
 .action-controls button[data-last-clicked="true"] {

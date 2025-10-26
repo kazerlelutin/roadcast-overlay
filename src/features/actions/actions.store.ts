@@ -23,7 +23,7 @@ export const actionsStore = createStore<ActionsStore>({
       return [];
     }
 
-    data.forEach((template: { name: string; content: string }) => {
+    data.forEach((template: { name: string; content: string, suffix?: string }) => {
       const div = document.createElement('div');
       div.innerHTML = template.content;
       const el = div.firstChild as HTMLElement;
@@ -41,6 +41,7 @@ export const actionsStore = createStore<ActionsStore>({
         script: scripts || [],
         html: template.content || '',
         inputs: inputs || [],
+        suffix: template.suffix || '',
       });
     })
     return actionsStore.actions

@@ -9,8 +9,10 @@
 </div>
 
 <script>
-  async function start_title() {
-    const titleRes = await fetch('/api/actions/input/titre_title')
+  async function start_title(suffix = '') {
+    const titleRes = await fetch(
+      `/api/actions/input/titre_title${suffix ? '_' + suffix : ''}`
+    )
     const title = await titleRes.text()
 
     const titleContainer = document.querySelector('.title-container')

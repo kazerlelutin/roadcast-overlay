@@ -74,9 +74,9 @@
       requestAnimationFrame(animate)
     }
 
-    async function start_countdown_timer() {
+    async function start_countdown_timer(suffix = '') {
       if (started) return
-      currentSeconds = await get_time()
+      currentSeconds = await get_time(suffix)
       totalSeconds = currentSeconds
       cleanupDigitAnimations()
       started = true
@@ -208,8 +208,10 @@
       return messageFin
     }
 
-    async function get_time() {
-      const timeRes = await fetch(`/api/actions/input/temps_countdown`)
+    async function get_time(suffix = '') {
+      const timeRes = await fetch(
+        `/api/actions/input/temps_countdown${suffix ? '_' + suffix : ''}`
+      )
 
       const resText = await timeRes.text()
       if (resText) {

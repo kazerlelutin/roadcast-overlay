@@ -32,7 +32,6 @@ const overlayCtrl: OverlayCtrl = {
     websocketAPI.subscribe(overlay, overlayCtrl.subscribe);
   },
   subscribe: (message) => {
-    console.log(message)
     const overlayContainer = document.getElementById(OVERLAY_CONTAINER_ID);
     if (!overlayContainer) {
       throw new Error('Overlay container not found');
@@ -58,7 +57,7 @@ const overlayCtrl: OverlayCtrl = {
         overlayContainer.appendChild(script);
         if (script.textContent) {
           try {
-            eval(script.textContent);
+            eval(script.textContent)
           } catch (error) {
             console.error('Erreur lors de l\'exécution du script du template:', error);
           }
@@ -67,7 +66,7 @@ const overlayCtrl: OverlayCtrl = {
 
       overlayCtrl.adaptInsert();
     }
-    globalThis?.[message.script as keyof typeof globalThis]?.();
+    globalThis?.[message.script as keyof typeof globalThis]?.(message.suffix || null);
   },
 
   setupResizeObserver: () => {

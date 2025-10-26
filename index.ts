@@ -2,8 +2,9 @@ import { serve } from "bun";
 import index from "./index.html";
 import { actionExecuteGET, actionInputGET, actionsGET } from "./src/features/actions/actions.GET";
 import { alertPost } from "./src/features/alert/alert.POST";
-import { actionInputPost } from "./src/features/actions/action.post";
+import { actionCopyPost, actionInputPost } from "./src/features/actions/action.post";
 import { pinnedPost } from "./src/features/pinned-message/pinned-message.POST";
+import { actionExecuteDelete } from "./src/features/actions/action.DELETE";
 
 
 export const server = serve({
@@ -31,9 +32,16 @@ export const server = serve({
     "/api/actions/input/:name": {
       GET: actionInputGET,
     },
+    "/api/actions/execute/copy/:id": {
+      POST: actionCopyPost,
+    },
+    "/api/actions/execute/delete/:id": {
+      DELETE: actionExecuteDelete,
+    },
     "/api/actions/execute/:id/:script/:overlay": {
       GET: actionExecuteGET,
     },
+
     "/api/actions/execute/alert/send": {
       POST: alertPost,
     },

@@ -30,12 +30,13 @@
     const slotStr = (await resSlot.text()) || '1'
     const slot = parseInt(slotStr)
 
-    const guestContainer = document.querySelector('#overlay')
+    const overlay = document.querySelector('#overlay')
+
+    const guestContainer = overlay.querySelector('.guest')
     if (guestContainer) {
-      const guestContainerWidth = guestContainer.offsetWidth
+      const guestContainerWidth = overlay.offsetWidth
 
       const segment = Math.floor(guestContainerWidth / 4)
-      console.log(segment, guestContainerWidth)
       guestContainer.style.left = `${segment * slot - segment}px`
     }
 
@@ -101,7 +102,8 @@
   .guest {
     position: absolute;
     bottom: 8em;
-    left: 4em;
+    left: 0;
+    padding-left: 4em;
     z-index: 1000;
     font-family: Bebas Neue;
   }
